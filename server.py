@@ -5,14 +5,14 @@
 # FOR DEVELOPMENT PURPOSES ONLY
 
 import os, sys
-from datetime import datetime
+from datetime import datetime, timezone
 from random import randint
 
 
 def create_dummy_credentials():
     if not os.path.isfile(os.environ['MOD_DEVICE_TAG']):
         with open(os.environ['MOD_DEVICE_TAG'], 'w') as fh:
-            tag = 'MDS-{0}-0-00-000-{1}'.format(datetime.utcnow().strftime('%Y%m%d'), randint(9000, 9999))
+            tag = 'MDS-{0}-0-00-000-{1}'.format(datetime.now(timezone.utc).strftime('%Y%m%d'), randint(9000, 9999))
             fh.write(tag)
     if not os.path.isfile(os.environ['MOD_DEVICE_UID']):
         with open(os.environ['MOD_DEVICE_UID'], 'w') as fh:

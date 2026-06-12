@@ -20,6 +20,7 @@ from base64 import b64decode, b64encode
 from datetime import timedelta
 from random import randint
 import asyncio as _asyncio
+import inspect as _inspect
 import tornado.gen as _tornado_gen
 import tornado.ioloop as _tornado_ioloop
 import tornado.util as _tornado_util
@@ -34,8 +35,11 @@ if not hasattr(_tornado_util, 'unicode_type'):
 
 if not hasattr(_tornado_gen, 'Task'):
     def _gen_task_compat(func, *args, **kwargs):
+        # Detect @gen.coroutine-wrapped generators via __wrapped__ chain, and
+        # native async def via asyncio; both are called directly as they return
+        # a Future. Plain callback-based functions are handled below.
         if (_asyncio.iscoroutinefunction(func) or
-                getattr(func, '_is_coroutine', None) is _tornado_gen._is_coroutine):
+                _inspect.isgeneratorfunction(func)):
             return func(*args, **kwargs)
         fut = Future()
         def _done(*cb_args):
@@ -2021,7 +2025,7 @@ class BulkTemplateLoader(TimelessRequestHandler):
         self.set_header("Content-Type", "text/javascript; charset=UTF-8")
         basedir = os.path.join(HTML_DIR, 'include')
         for template in os.listdir(basedir):
-            if not re.match('^[a-z_]+\.html$', template):
+            if not re.match(r'^[a-z_]+\.html$', template):
                 continue
             with open(os.path.join(basedir, template), 'r') as fh:
                 contents = fh.read()
