@@ -47,9 +47,10 @@ os.environ['MOD_DEV_ENVIRONMENT'] = os.environ.get("MOD_DEV_ENVIRONMENT", '1')
 os.environ['MOD_DATA_DIR'] = DATA_DIR
 os.environ['MOD_LOG'] = os.environ.get("MOD_LOG", '1')
 os.environ['MOD_KEY_PATH'] = os.path.join(DATA_DIR, 'keys')
-os.environ['MOD_DEVICE_WEBSERVER_PORT'] = '8888'
-os.environ['MOD_HTML_DIR'] = os.path.join(ROOT, 'html')
-os.environ['MOD_DEFAULT_PEDALBOARD'] = os.path.join(ROOT, 'default.pedalboard')
+os.environ.setdefault('MOD_DEVICE_WEBSERVER_PORT', '8888')
+# Allow pre-set paths (e.g. from a wrapper script for an installed package)
+os.environ.setdefault('MOD_HTML_DIR', os.path.join(ROOT, 'html'))
+os.environ.setdefault('MOD_DEFAULT_PEDALBOARD', os.path.join(ROOT, 'default.pedalboard'))
 os.environ['MOD_DEVICE_KEY'] = os.path.join(DATA_DIR, 'rsa')
 os.environ['MOD_DEVICE_TAG'] = os.path.join(DATA_DIR, 'tag')
 os.environ['MOD_DEVICE_UID'] = os.path.join(DATA_DIR, 'uid')

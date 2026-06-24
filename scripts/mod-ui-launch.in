@@ -1,0 +1,8 @@
+#!/bin/sh
+# mod-ui-launch — start server, open browser, quit on tab close.
+# Paths are substituted by the Makefile at install time.
+#
+# Any variable may be overridden in the environment before running.
+export MOD_HTML_DIR="${MOD_HTML_DIR:-@DATADIR@/mod/html}"
+export MOD_DEFAULT_PEDALBOARD="${MOD_DEFAULT_PEDALBOARD:-@DATADIR@/mod/default.pedalboard}"
+exec @PYTHON@ @APPLIBDIR@/launch.py "$@"
