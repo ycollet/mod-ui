@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=MOD UI
+GenericName=Audio Pedalboard
+Comment=Web-based LV2 guitar effects pedalboard manager
+Exec=@BINDIR@/mod-ui-launch
+Icon=mod-ui
+Terminal=false
+Categories=Audio;AudioVideo;Music;
+Keywords=audio;guitar;bass;effects;pedalboard;lv2;jack;mod;duo;
+StartupNotify=true
