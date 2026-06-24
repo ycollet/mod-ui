@@ -1,20 +1,24 @@
 [Unit]
 Description=MOD Audio UI Web Server
 Documentation=https://github.com/moddevices/mod-ui
-After=network.target sound.target
-Wants=sound.target
+After=network.target sound.target mod-host.service
+# mod-host.service is optional: if mod-host is not installed the unit
+# simply does not exist and this Wants= is silently ignored.
+Wants=mod-host.service
 
 [Service]
 Type=simple
-# Load site-specific overrides (PORT, DATA_DIR, DEV_HOST flag, …)
+# Load site-specific overrides (PORT, DATA_DIR, MOD_DEV_HOST, …)
 EnvironmentFile=-@SYSCONFDIR@/mod-ui/mod-ui.env
 # Resolved at package install time by the Makefile
 Environment=MOD_HTML_DIR=@DATADIR@/mod/html
 Environment=MOD_DEFAULT_PEDALBOARD=@DATADIR@/mod/default.pedalboard
 Environment=MOD_DATA_DIR=%h/.local/share/mod-ui
-Environment=MOD_DEV_ENVIRONMENT=1
 Environment=MOD_LOG=1
 Environment=MOD_DEVICE_WEBSERVER_PORT=8888
+# Set MOD_DEV_HOST=1 in mod-ui.env to run without mod-host (no audio).
+# Set MOD_DEV_ENVIRONMENT=1 to skip hardware HMI (MOD Duo screen/knobs).
+Environment=MOD_DEV_ENVIRONMENT=1
 ExecStart=@BINDIR@/mod-ui
 Restart=on-failure
 RestartSec=3
