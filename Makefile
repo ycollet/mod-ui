@@ -123,10 +123,13 @@ install: build
 	$(SUBST) scripts/mod-ui-launch.in > $(DESTDIR)$(BINDIR)/mod-ui-launch
 	chmod 755 $(DESTDIR)$(BINDIR)/mod-ui-launch
 
-	# ── systemd user service ─────────────────────────────────────────────────
+	# ── systemd user services ────────────────────────────────────────────────
 	install -d $(DESTDIR)$(SVCDIR)
 	$(SUBST) systemd/mod-ui.service > $(DESTDIR)$(SVCDIR)/mod-ui.service
 	chmod 644 $(DESTDIR)$(SVCDIR)/mod-ui.service
+	# mod-host.service is installed unconditionally; it only activates when
+	# mod-host is actually present on the system.
+	install -m 644 systemd/mod-host.service $(DESTDIR)$(SVCDIR)/mod-host.service
 
 	# ── Environment config template ───────────────────────────────────────────
 	install -d $(DESTDIR)$(CONFDIR)
@@ -166,6 +169,7 @@ uninstall:
 	rm -f  $(DESTDIR)$(BINDIR)/mod-ui
 	rm -f  $(DESTDIR)$(BINDIR)/mod-ui-launch
 	rm -f  $(DESTDIR)$(SVCDIR)/mod-ui.service
+	rm -f  $(DESTDIR)$(SVCDIR)/mod-host.service
 	rm -f  $(DESTDIR)$(APPSDIR)/mod-ui.desktop
 	rm -f  $(DESTDIR)$(ICONDIR)/16x16/apps/mod-ui.png
 	rm -f  $(DESTDIR)$(ICONDIR)/32x32/apps/mod-ui.png

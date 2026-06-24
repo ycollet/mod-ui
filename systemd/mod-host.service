@@ -1,0 +1,17 @@
+[Unit]
+Description=MOD Audio Host (LV2 plugin engine)
+Documentation=https://github.com/moddevices/mod-host
+# mod-host requires a running JACK or PipeWire-JACK session.
+# On a desktop, JACK is typically managed by the user (QJackCtl,
+# Cadence, or a pipewire-jack session); there is no single standard
+# unit to depend on, so we just declare the ordering.
+After=sound.target
+
+[Service]
+Type=simple
+ExecStart=mod-host -n -p 5555 -f 5556
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=default.target
