@@ -32,6 +32,8 @@ PBDIR     = $(DATADIR)/mod/default.pedalboard
 # Installed as a user-level systemd service (no root required to start)
 SVCDIR    = $(LIBDIR)/systemd/user
 CONFDIR   = $(SYSCONFDIR)/$(APPNAME)
+APPSDIR   = $(DATADIR)/applications
+ICONDIR   = $(DATADIR)/icons/hicolor
 
 DESTDIR  ?=
 
@@ -130,6 +132,29 @@ install: build
 	install -d $(DESTDIR)$(CONFDIR)
 	install -m 644 systemd/mod-ui.env $(DESTDIR)$(CONFDIR)/mod-ui.env
 
+	# ── Desktop entry ────────────────────────────────────────────────────────
+	install -d $(DESTDIR)$(APPSDIR)
+	$(SUBST) desktop/mod-ui.desktop.in > $(DESTDIR)$(APPSDIR)/mod-ui.desktop
+	chmod 644 $(DESTDIR)$(APPSDIR)/mod-ui.desktop
+
+	# ── Icons (hicolor theme, sourced from the favicon set) ───────────────────
+	# Sizes available in the source: 16, 32, 96, 192, and 405 (used as 256).
+	install -d $(DESTDIR)$(ICONDIR)/16x16/apps
+	install -m 644 html/img/favicon/favicon-16x16.png \
+		$(DESTDIR)$(ICONDIR)/16x16/apps/mod-ui.png
+	install -d $(DESTDIR)$(ICONDIR)/32x32/apps
+	install -m 644 html/img/favicon/favicon-32x32.png \
+		$(DESTDIR)$(ICONDIR)/32x32/apps/mod-ui.png
+	install -d $(DESTDIR)$(ICONDIR)/96x96/apps
+	install -m 644 html/img/favicon/favicon-96x96.png \
+		$(DESTDIR)$(ICONDIR)/96x96/apps/mod-ui.png
+	install -d $(DESTDIR)$(ICONDIR)/192x192/apps
+	install -m 644 html/img/favicon/android-icon-192x192.png \
+		$(DESTDIR)$(ICONDIR)/192x192/apps/mod-ui.png
+	install -d $(DESTDIR)$(ICONDIR)/256x256/apps
+	install -m 644 html/img/favicon/favicon.png \
+		$(DESTDIR)$(ICONDIR)/256x256/apps/mod-ui.png
+
 # ── uninstall ─────────────────────────────────────────────────────────────────
 
 uninstall:
@@ -141,3 +166,9 @@ uninstall:
 	rm -f  $(DESTDIR)$(BINDIR)/mod-ui
 	rm -f  $(DESTDIR)$(BINDIR)/mod-ui-launch
 	rm -f  $(DESTDIR)$(SVCDIR)/mod-ui.service
+	rm -f  $(DESTDIR)$(APPSDIR)/mod-ui.desktop
+	rm -f  $(DESTDIR)$(ICONDIR)/16x16/apps/mod-ui.png
+	rm -f  $(DESTDIR)$(ICONDIR)/32x32/apps/mod-ui.png
+	rm -f  $(DESTDIR)$(ICONDIR)/96x96/apps/mod-ui.png
+	rm -f  $(DESTDIR)$(ICONDIR)/192x192/apps/mod-ui.png
+	rm -f  $(DESTDIR)$(ICONDIR)/256x256/apps/mod-ui.png
