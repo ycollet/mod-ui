@@ -19,49 +19,7 @@ import unicodedata
 from base64 import b64decode, b64encode
 from datetime import timedelta
 from random import randint
-import asyncio as _asyncio
-import inspect as _inspect
-import tornado.gen as _tornado_gen
-import tornado.ioloop as _tornado_ioloop
-import tornado.util as _tornado_util
-import tornado.web as _tornado_web
 from tornado.concurrent import Future
-
-# Tornado 6.x compatibility: restore APIs removed since tornado 4.x.
-# These patches are applied globally (tornado modules are singletons), so they
-# also cover gen.Task / IOLoop.instance() usage in host.py, session.py, etc.
-if not hasattr(_tornado_util, 'unicode_type'):
-    _tornado_util.unicode_type = str
-
-if not hasattr(_tornado_gen, 'Task'):
-    def _gen_task_compat(func, *args, **kwargs):
-        # Detect @gen.coroutine-wrapped generators via __wrapped__ chain, and
-        # native async def via asyncio; both are called directly as they return
-        # a Future. Plain callback-based functions are handled below.
-        if (_asyncio.iscoroutinefunction(func) or
-                _inspect.isgeneratorfunction(func)):
-            return func(*args, **kwargs)
-        fut = Future()
-        def _done(*cb_args):
-            if not fut.done():
-                if len(cb_args) == 0:
-                    fut.set_result(None)
-                elif len(cb_args) == 1:
-                    fut.set_result(cb_args[0])
-                else:
-                    fut.set_result(cb_args)
-        func(*args, callback=_done, **kwargs)
-        return fut
-    _tornado_gen.Task = _gen_task_compat
-
-if not hasattr(_tornado_gen, 'engine'):
-    _tornado_gen.engine = _tornado_gen.coroutine
-
-if not hasattr(_tornado_web, 'asynchronous'):
-    _tornado_web.asynchronous = lambda method: method
-
-if not hasattr(_tornado_ioloop.IOLoop, 'instance'):
-    _tornado_ioloop.IOLoop.instance = staticmethod(_tornado_ioloop.IOLoop.current)
 
 from tornado import gen, iostream, web, websocket
 from tornado.escape import squeeze, url_escape, xhtml_escape

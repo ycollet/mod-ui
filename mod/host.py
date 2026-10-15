@@ -21,6 +21,7 @@ from datetime import timedelta
 from random import randint
 from tornado import gen, iostream
 from tornado.ioloop import IOLoop, PeriodicCallback
+from mod.tornado_compat import connect, read_until
 from urllib.parse import quote, unquote
 import os, json, socket, time, logging, sys
 import shutil
@@ -1264,13 +1265,13 @@ class Host(object):
         self.writesock = iostream.IOStream(socket.socket(socket.AF_INET, socket.SOCK_STREAM))
         self.writesock.set_close_callback(self.writer_connection_closed)
         self.writesock.set_nodelay(True)
-        self.writesock.connect(self.addr, writer_check_response)
+        connect(self.writesock, self.addr, writer_check_response)
 
         # Extra socket, used for receiving messages
         self.readsock = iostream.IOStream(socket.socket(socket.AF_INET, socket.SOCK_STREAM))
         self.readsock.set_close_callback(self.reader_connection_closed)
         self.readsock.set_nodelay(True)
-        self.readsock.connect((self.addr[0], self.addr[1]+1), reader_check_response)
+        connect(self.readsock, (self.addr[0], self.addr[1]+1), reader_check_response)
 
     def reader_connection_closed(self):
         self.readsock = None
@@ -1909,7 +1910,7 @@ class Host(object):
     def process_read_queue(self):
         if self.readsock is None:
             return
-        self.readsock.read_until(b"\0", self.process_read_message)
+        read_until(self.readsock, b"\0", self.process_read_message)
 
     def send_output_data_ready(self, now, callback):
         ioloop = IOLoop.instance()
@@ -1964,7 +1965,7 @@ class Host(object):
 
         encmsg = "%s\0" % str(msg)
         self.writesock.write(encmsg.encode("utf-8"))
-        self.writesock.read_until(b"\0", check_response)
+        read_until(self.writesock, b"\0", check_response)
 
     # send data to host, set modified flag to true
     def send_modified(self, msg, callback=None, datatype='int'):

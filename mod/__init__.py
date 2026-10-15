@@ -12,6 +12,10 @@ from datetime import datetime
 from functools import wraps
 from unicodedata import normalize
 
+from mod.tornado_compat import install as install_tornado_compat
+
+install_tornado_compat()
+
 from mod.settings import HARDWARE_DESC_FILE
 
 

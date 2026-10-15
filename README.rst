@@ -30,6 +30,15 @@ Install python requirements::
 
     $ pip3 install -r requirements.txt
 
+On current Fedora, the Python dependencies can also be supplied by distribution
+packages (``python3-pillow``, ``python3-pyserial``, ``python3-tornado``,
+``python3-pycryptodomex``, and ``python3-aggdraw``). Tornado 6 support for the
+remaining callback-based code lives in ``mod/tornado_compat.py``; it is loaded
+when the ``mod`` package is imported, including when the audio host is used
+without the webserver. Its focused regression tests can be run with::
+
+    $ python3 -m unittest discover -s test -p 'test_tornado_compat.py'
+
 Compile libmod_utils::
 
     $ make -C utils

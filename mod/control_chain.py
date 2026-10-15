@@ -8,6 +8,7 @@ import socket
 from tornado import gen, iostream
 from tornado.ioloop import IOLoop
 from mod import symbolify
+from mod.tornado_compat import connect, read_until
 
 CC_MODE_TOGGLE      = 0x001
 CC_MODE_TRIGGER     = 0x002
@@ -60,7 +61,7 @@ class ControlChainDeviceListener(object):
         self.send_request("device_list", None, self.device_list_init)
 
         # ready to roll
-        self.socket.connect(self.socket_path, self.connection_started)
+        connect(self.socket, self.socket_path, self.connection_started)
 
     def restart_if_crashed(self):
         if not self.crashed:
@@ -131,7 +132,7 @@ class ControlChainDeviceListener(object):
     # -----------------------------------------------------------------------------------------------------------------
 
     def process_read_queue(self, _=None):
-        self.socket.read_until(b"\0", self.check_read_response)
+        read_until(self.socket, b"\0", self.check_read_response)
 
     @gen.coroutine
     def check_read_response(self, resp):
@@ -203,7 +204,7 @@ class ControlChainDeviceListener(object):
 
         self.idle = False
         self.socket.write(to_send)
-        self.socket.read_until(b"\0", check_write_response)
+        read_until(self.socket, b"\0", check_write_response)
 
     # -----------------------------------------------------------------------------------------------------------------
 

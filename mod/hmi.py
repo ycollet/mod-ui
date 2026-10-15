@@ -52,6 +52,7 @@ from mod.mod_protocol import (
     cmd_to_str,
 )
 from mod.settings import LOG
+from mod.tornado_compat import read_until
 
 import logging
 import time
@@ -231,7 +232,7 @@ class HMI(object):
             self.flush_io = ioloop.call_later(self.timeout/2, self.flush)
 
         try:
-            self.sp.read_until(b'\0', self.checker)
+            read_until(self.sp, b'\0', self.checker)
         except serial.SerialException as e:
             logging.error("[hmi] error while reading %s", e)
 

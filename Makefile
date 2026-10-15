@@ -85,6 +85,7 @@ install: build
 	install -m 644 mod/session.py            $(DESTDIR)$(PYTHON_SITEDIR)/mod/
 	install -m 644 mod/settings.py           $(DESTDIR)$(PYTHON_SITEDIR)/mod/
 	install -m 644 mod/tuner.py              $(DESTDIR)$(PYTHON_SITEDIR)/mod/
+	install -m 644 mod/tornado_compat.py     $(DESTDIR)$(PYTHON_SITEDIR)/mod/
 	install -m 644 mod/webserver.py          $(DESTDIR)$(PYTHON_SITEDIR)/mod/
 	install -m 644 mod/communication/__init__.py $(DESTDIR)$(PYTHON_SITEDIR)/mod/communication/
 	install -m 644 mod/communication/crypto.py   $(DESTDIR)$(PYTHON_SITEDIR)/mod/communication/
